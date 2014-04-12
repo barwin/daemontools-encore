@@ -2,6 +2,9 @@
 test.sv: unable to open supervise/ok: file does not exist
 nonexistent: unable to chdir: file does not exist
 0
+test.sv: unable to open supervise/ok: file does not exist
+nonexistent: unable to chdir: file does not exist
+0
 --- svc handles new and nonexistent directories
 svc: warning: unable to control test.sv: file does not exist
 svc: warning: unable to chdir to nonexistent: file does not exist

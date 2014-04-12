@@ -10,6 +10,9 @@ svstat \- prints the status of services monitored by
 [
 .B \-l
 ]
+[
+.B \-c
+]
 .I services
 .SH DESCRIPTION
 .I services
@@ -32,6 +35,9 @@ Only report the status of the log process of all listed services.
 .TP
 .B \-l
 Do not report the status of the log process of all listed services.
+.TP
+.B \-c
+Enable colors in svstat output.
 .SH ENVIRONMENT
 .TP
 .B SUPERVISEDIR
@@ -42,6 +48,9 @@ for the status information and control files.  If
 is an absolute path, it is suffixed with the path to
 .I s
 with all slashes ("/") replaced with colons (":").
+.TP
+.B SVCOLOR
+If set to 1, the -c flag is enabled.
 .SH SEE ALSO
 supervise(8),
 svc(8),

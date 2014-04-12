@@ -2,12 +2,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "strerr.h"
+#include "env.h"
 #include "error.h"
 #include "open.h"
 #include "fmt.h"
 #include "tai.h"
 #include "buffer.h"
 #include "sgetopt.h"
+#include "str.h"
+#include "svcolor.h"
 #include "svpath.h"
 #include "svstatus.h"
 
@@ -20,6 +23,7 @@ buffer b = BUFFER_INIT(buffer_unixwrite,1,bspace,sizeof bspace);
 char strnum[FMT_ULONG];
 
 int check_log = -1;
+int opt_color = 0;
 
 static void die_nomem(void)
 {
@@ -28,7 +32,22 @@ static void die_nomem(void)
 
 static void die_usage(void)
 {
-  strerr_die1x(100,"svstat: usage: svstat [-L] [-l] dir [dir ...]");
+  strerr_die1x(100,"svstat: usage: svstat [-L] [-l] [-c] dir [dir ...]");
+}
+
+void color_buffer_puts(buffer *s, const char *buf, enum sv_color color)
+{
+  if (opt_color) {
+    switch (color) {
+      case sv_color_red:    buffer_puts(s, "\e[31;1m"); break;
+      case sv_color_green:  buffer_puts(s, "\e[32;1m"); break;
+      case sv_color_yellow: buffer_puts(s, "\e[33;1m"); break;
+    }
+    buffer_puts(s, buf);
+    buffer_puts(s, "\e[0m");
+  }
+  else
+    buffer_puts(s, buf);
 }
 
 static void showstatus(const char status[19], int r, int normallyup)
@@ -56,22 +75,29 @@ static void showstatus(const char status[19], int r, int normallyup)
   tai_sub(&when,&now,&when);
 
   if (pid) {
-    buffer_puts(&b,"up (pid ");
+    color_buffer_puts(&b, "up", sv_color_green);
+    buffer_puts(&b, " (pid ");
     buffer_put(&b,strnum,fmt_ulong(strnum,pid));
     buffer_puts(&b,") ");
   }
   else
-    buffer_puts(&b,"down ");
+    color_buffer_puts(&b,"down ", sv_color_red);
 
   buffer_put(&b,strnum,fmt_ulong(strnum,tai_approx(&when)));
   buffer_puts(&b," seconds");
 
-  if (pid && !normallyup)
-    buffer_puts(&b,", normally down");
-  if (!pid && normallyup)
-    buffer_puts(&b,", normally up");
-  if (pid && paused)
-    buffer_puts(&b,", paused");
+  if (pid && !normallyup) {
+    buffer_puts(&b,", ");
+    color_buffer_puts(&b,"normally down", sv_color_yellow);
+  }
+  if (!pid && normallyup) {
+    buffer_puts(&b,", ");
+    color_buffer_puts(&b,"normally up", sv_color_yellow);
+  }
+  if (pid && paused) {
+    buffer_puts(&b,", ");
+    color_buffer_puts(&b,"paused", sv_color_yellow);
+  }
   if (!pid && (want == 'u'))
     buffer_puts(&b,", want up");
   if (pid && (want == 'd'))
@@ -188,13 +214,16 @@ int main(int argc,const char *const *argv)
   const char *dir;
   int opt;
 
-  while ((opt = getopt(argc,argv,"lL")) != opteof) {
+  while ((opt = getopt(argc,argv,"lLc")) != opteof) {
     switch (opt) {
     case 'L':
       check_log = 1;
       break;
     case 'l':
       check_log = 0;
+      break;
+    case 'c':
+      opt_color = 1;
       break;
     default:
       die_usage();
@@ -208,6 +237,10 @@ int main(int argc,const char *const *argv)
   fdorigdir = open_read(".");
   if (fdorigdir == -1)
     strerr_die2sys(111,FATAL,"unable to open current directory");
+
+  const char *env_svcolor_enable = env_get("SVCOLOR");
+  if (env_svcolor_enable && str_diff(env_svcolor_enable, "1") == 0)
+    opt_color = 1;
 
   while ((dir = *argv++) != 0) {
     doit(dir);

@@ -14,6 +14,7 @@ svup test.sv; echo $?
 svup -l test.sv; echo $?
 svup -L test.sv; echo $?
 ( svstat test.sv; echo $?; ) | filter_svstat
+( svstat -c test.sv; echo $?; ) | filter_svstat
 svc -x test.sv; echo $?
 wait
 svstat test.sv; echo $?
@@ -36,6 +37,14 @@ echo $?
 svstat -l .
 echo $?
 svstat -L .
+echo $?
+svstat -c .
+echo $?
+SVCOLOR=1 svstat .
+echo $?
+svstat -l -c .
+echo $?
+svstat -L -c .
 echo $?
 svup .
 echo \$?
@@ -61,6 +70,12 @@ echo $?
 svstat -l .
 echo $?
 svstat -L .
+echo $?
+svstat -c .
+echo $?
+svstat -l -c .
+echo $?
+svstat -L -c .
 echo $?
 svup .
 echo \$?
