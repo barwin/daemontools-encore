@@ -3,6 +3,7 @@ echo '--- svstat handles new and nonexistent directories'
 chmod 755 test.sv/run
 touch test.sv/down
 svstat test.sv nonexistent; echo $?
+svstat -c test.sv nonexistent; echo $?
 
 echo '--- svc handles new and nonexistent directories'
 svc test.sv nonexistent; echo $?

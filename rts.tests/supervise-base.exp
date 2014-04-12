@@ -4,6 +4,8 @@
 100
 test.sv: down x seconds, starting
 0
+test.sv: ^[[31;1mdown ^[[0mx seconds, starting
+0
 0
 test.sv: supervise not running
 0
@@ -13,6 +15,12 @@ hi
 .: up (pid x) x seconds, normally down, running
 0
 .: up (pid x) x seconds, normally down, running
+0
+.: no log service
+0
+.: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
+0
+.: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
 0
 .: no log service
 0
@@ -26,6 +34,13 @@ hi
 .: up (pid x) x seconds, normally down, running
 0
 . log: up (pid x) x seconds, normally down, running
+0
+.: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
+. log: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
+0
+.: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
+0
+. log: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
 0
 0
 0
