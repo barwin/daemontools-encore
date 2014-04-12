@@ -22,6 +22,8 @@ hi
 0
 .: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
 0
+.: ^[[32;1mup^[[0m (pid x) x seconds, ^[[33;1mnormally down^[[0m, running
+0
 .: no log service
 0
 0

@@ -40,6 +40,8 @@ svstat -L .
 echo $?
 svstat -c .
 echo $?
+SVCOLOR=1 svstat .
+echo $?
 svstat -l -c .
 echo $?
 svstat -L -c .

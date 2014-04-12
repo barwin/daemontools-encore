@@ -2,12 +2,14 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include "strerr.h"
+#include "env.h"
 #include "error.h"
 #include "open.h"
 #include "fmt.h"
 #include "tai.h"
 #include "buffer.h"
 #include "sgetopt.h"
+#include "str.h"
 #include "svcolor.h"
 #include "svpath.h"
 #include "svstatus.h"
@@ -235,6 +237,10 @@ int main(int argc,const char *const *argv)
   fdorigdir = open_read(".");
   if (fdorigdir == -1)
     strerr_die2sys(111,FATAL,"unable to open current directory");
+
+  const char *env_svcolor_enable = env_get("SVCOLOR");
+  if (env_svcolor_enable && str_diff(env_svcolor_enable, "1") == 0)
+    opt_color = 1;
 
   while ((dir = *argv++) != 0) {
     doit(dir);
